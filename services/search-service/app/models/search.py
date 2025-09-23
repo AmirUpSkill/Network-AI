@@ -12,6 +12,7 @@ class SearchCategory(str, Enum):
     LINKEDIN_PROFILE = "linkedin profile"
     COMPANY = "company"
     # we will add later more 
+
 # --- Request Models --- 
 class SearchRequest(BaseModel):
     """
@@ -34,6 +35,7 @@ class SearchRequest(BaseModel):
         le=50, 
         description="The maximum number of results to return."
     )
+
 # --- Nested Response Models --- 
 class WorkExperienceItem(BaseModel):
     """Represents a single entry in a person's work history."""
@@ -64,19 +66,77 @@ class PersonResult(BaseModel):
     work_experience: List[WorkExperienceItem] = []
     education: List[EducationItem] = []
     skills: List[str] = []
-# --- For now we only had for Linkedin Profile later we can add more personlise ones ---- 
 
 # --- Metadata --- 
 class SearchMetadata(BaseModel):
     """
-        Contains metadata about the search operation 
+    Contains metadata about the search operation 
     """
     total_results: int 
     search_time_ms: float 
     enhanced_query: Optional[str] = None 
+
+# --- Raw Exa Response Models ---
+class ExaSearchResponse(BaseModel):
+    """
+    Model representing the raw response from Exa API.
+    """
+    results: List[PersonResult]
+    auto_date: Optional[str] = None
+    autoprompt_string: Optional[str] = None
+    resolved_search_type: Optional[str] = None
+    cost_dollars: Optional[dict] = None  
+    
+    @classmethod
+    def from_exa_response(cls, exa_response) -> 'ExaSearchResponse':
+        """
+        Factory method to create ExaSearchResponse from Exa API response object.
+        Handles both Result objects and dictionary formats.
+        """
+        # Lazy import to break circular dependency
+        from app.models.parsers import PersonResultParser
+        
+        # ---  Parse results using the dedicated parser ----
+        parsed_results = PersonResultParser.parse_results(exa_response.results)
+        
+        cost_dollars = getattr(exa_response, 'cost_dollars', None)
+        if cost_dollars is not None:
+            if hasattr(cost_dollars, '__dict__'):
+                cost_dollars = cost_dollars.__dict__.copy()  
+            elif isinstance(cost_dollars, dict):  
+                pass
+            else:
+                cost_dollars = {}  
+        
+        return cls(
+            results=parsed_results,
+            auto_date=getattr(exa_response, 'auto_date', None),
+            autoprompt_string=getattr(exa_response, 'autoprompt_string', None),
+            resolved_search_type=getattr(exa_response, 'resolved_search_type', None),
+            cost_dollars=cost_dollars  
+        )
+
 class SearchResponse(BaseModel):
     """
-        The final response structure for the /search/linkedin endpoint.
+    The final response structure for the /search/linkedin endpoint.
     """
     results: List[PersonResult]
     metadata: SearchMetadata
+    
+    @classmethod
+    def from_exa_response(cls, exa_response, enhanced_query: Optional[str] = None) -> 'SearchResponse':
+        """
+        Factory method to create SearchResponse from ExaSearchResponse.
+        """
+        exa_search_response = ExaSearchResponse.from_exa_response(exa_response)
+        
+        metadata = SearchMetadata(
+            total_results=len(exa_search_response.results),
+            search_time_ms=0.0,  
+            enhanced_query=enhanced_query
+        )
+        
+        return cls(
+            results=exa_search_response.results,
+            metadata=metadata
+        )

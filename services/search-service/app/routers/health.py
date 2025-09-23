@@ -1,1 +1,14 @@
-# Router for the /health check endpoint.
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/health")
+async def health_check():
+    """
+    Basic health check endpoint.
+    """
+    return {
+        "status": "healthy",
+        "service": "search-service",
+        "version": "1.0.0"
+    }

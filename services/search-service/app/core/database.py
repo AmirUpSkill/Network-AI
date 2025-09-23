@@ -22,16 +22,16 @@ def get_mongo_client() -> MongoClient:
     global _client
     if _client is None:
         try:
-            # Create client with connection timeout
+            # ---  Create client with connection timeout ----
             _client = MongoClient(
                 settings.mongodb_uri,
-                serverSelectionTimeoutMS=5000,  # 5 second timeout
+                serverSelectionTimeoutMS=5000,  
                 connectTimeoutMS=5000,
                 maxPoolSize=50,
                 minPoolSize=5
             )
             
-            # Test the connection by running a simple command
+            # ---  Test the connection by running a simple command ---
             _client.admin.command('ping')
             logger.info("Successfully connected to MongoDB")
             
