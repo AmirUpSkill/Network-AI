@@ -1,0 +1,1 @@
+# Pydantic settings management to load env variables.

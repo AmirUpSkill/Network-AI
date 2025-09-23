@@ -1,0 +1,1 @@
+# Wrapper for Gemini SDK (e.g., query enhancement).

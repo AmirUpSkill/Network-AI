@@ -1,0 +1,1 @@
+# FastAPI app entrypoint. Mounts routers and configures middleware.

@@ -1,0 +1,12 @@
+# Python dependencies for this service.
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+exa-py
+google-generativeai
+pymongo
+python-dotenv
+pytest
+pytest-asyncio
+httpx
