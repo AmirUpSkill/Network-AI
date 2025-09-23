@@ -1,1 +1,0 @@
-# Instructions to build the service's Docker image.
