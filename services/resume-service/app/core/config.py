@@ -1,20 +1,22 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
 class Settings(BaseSettings):
     # ---  Supabase ---
-    SUPABASE_URL: str = Field(..., env="SUPABASE_URL")
-    SUPABASE_KEY: str = Field(..., env="SUPABASE_KEY")
+    SUPABASE_URL: str = Field(..., description="Supabase project URL")
+    SUPABASE_KEY: str = Field(..., description="Supabase service role key")
 
     #  ---  External APIs --- 
-    LANDING_AI_API_KEY: str = Field(..., env="LANDING_AI_API_KEY")
-    GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
-    FIRE_CRAWL_API_KEY: str = Field(..., env="FIRE_CRAWL_API_KEY")
+    LANDING_AI_API_KEY: str = Field(..., description="Landing AI API key for PDF parsing")
+    GEMINI_API_KEY: str = Field(..., description="Google Gemini API key for analysis")
+    FIRE_CRAWL_API_KEY: str = Field(..., description="FireCrawl API key for URL scraping")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(
+        env_file=".env", 
+        env_file_encoding="utf-8",
+        case_sensitive=True
+    )
 
 
 # ---  Singleton instance --- 
