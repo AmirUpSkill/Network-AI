@@ -10,11 +10,13 @@ pydantic-settings
 
 # ---  AI & Scraping Services ---
 google-genai
-landingai          
+landingai
+agentic-doc         
 firecrawl-py     
 # ---  Utilities ---
 python-dotenv      
 
 # --- Development & Testing Dependencies ---
 pytest              
-httpx               
+httpx
+pytest-asyncio              

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class UploadResponse(BaseModel):
-    file_id: UUID = Field(..., description="A unique identifier for the uploaded resume file.")
+    file_id: UUID = Field(..., description="A unique identifier...")
     message: str = Field(..., description="A confirmation message.")
 
 
