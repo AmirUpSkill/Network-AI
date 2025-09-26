@@ -1,0 +1,1 @@
+# Wrapper for FireCrawl API to scrape job URLs.

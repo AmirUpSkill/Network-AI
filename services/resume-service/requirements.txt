@@ -1,0 +1,20 @@
+fastapi
+uvicorn[standard]
+
+# --- Supabase Client (Storage and DB) --- 
+supabase
+
+# ---  Pydantic for Settings and Data Models ---
+pydantic
+pydantic-settings
+
+# ---  AI & Scraping Services ---
+google-genai
+landingai          
+firecrawl-py     
+# ---  Utilities ---
+python-dotenv      
+
+# --- Development & Testing Dependencies ---
+pytest              
+httpx               

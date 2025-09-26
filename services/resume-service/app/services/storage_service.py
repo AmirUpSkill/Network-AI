@@ -1,0 +1,1 @@
+# Handles file uploads/downloads with Supabase Storage.
