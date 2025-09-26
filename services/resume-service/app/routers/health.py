@@ -1,0 +1,1 @@
+# Router for the /health check endpoint.
