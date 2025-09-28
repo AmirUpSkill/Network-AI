@@ -1,31 +1,58 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(req: NextRequest){
-    // --- Create a Supabase client ---- 
-    const res = NextResponse.next()
-    const supabase = createMiddlewareClient({ req, res })
-    // --- Refresh Session if expired --- 
-    await supabase.auth.getSession()
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
 
-    const { data: { session } } = await supabase.auth.getSession()
-    const { pathname } = req.nextUrl
-    // --- Redirect authenticated users away from the /auth page 
-    if (session && pathname.startsWith('/auth')) {
-        return NextResponse.redirect(new URL('/dashboard', req.url))
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
+        },
+      },
     }
-    // --- Protect the /dashboard routes --- 
-    if (!session && pathname.startsWith('/dashboard')) {
-        return NextResponse.redirect(new URL('/auth', req.url))
-    }
-    return res
+  )
+
+  const { data: { session } } = await supabase.auth.getSession()
+  const { pathname } = request.nextUrl
+
+  if (pathname.startsWith('/auth/callback')) {
+    return response
+  }
+
+  if (session && pathname.startsWith('/auth')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  if (!session && pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/auth', request.url))
+  }
+
+  return response
 }
 
 export const config = {
-    matcher : [
-        '/auth',
-        '/dashboard/:path*',
-        '/',
-    ],
+  matcher: [
+    '/auth/:path*',
+    '/dashboard/:path*',
+  ],
 }
