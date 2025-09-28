@@ -36,7 +36,7 @@ app.add_middleware(
 
 # --- Mount Routers ---
 app.include_router(health.router, prefix="/health")
-app.include_router(search.router, prefix="/search")
+app.include_router(search.router,)
 
 if __name__ == "__main__":
     uvicorn.run(

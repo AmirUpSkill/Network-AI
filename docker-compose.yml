@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # --- API Gateway - Routes traffic to local backend services ---
+  api-gateway:
+    image: nginx:alpine
+    container_name: networkai-gateway
+    ports:
+      - "8000:8000"  # --- Expose gateway on localhost:8000 ---
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro  # --- Mount nginx config as read-only ---
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # --- Allow container to reach host services ---
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - networkai-network
+
+networks:
+  networkai-network:
+    driver: bridge
+    name: networkai-net
+
+volumes:
+  gateway-logs:
+    name: networkai-gateway-logs

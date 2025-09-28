@@ -1,67 +1,54 @@
-import os
-from google import genai
+from app.services.pdf_parser_service import parse_resume_from_storage
+from app.services.scrape_service import scrape_job_posting
+from app.services.gemini_service import generate_automated_analysis  
 from app.models.resume import AnalysisReport
-from app.core.config import settings
+from fastapi import HTTPException
+import logging
 
-# Initialize Gemini client using the latest google-genai SDK
-client = genai.Client(api_key=settings.GEMINI_API_KEY)
+logger = logging.getLogger(__name__)
 
-ANALYSIS_SYSTEM_PROMPT = """
-You are an expert resume reviewer and career advisor. Your task is to analyze a candidate's resume against a specific job description and produce a structured, actionable report in JSON format.
-
-Follow these rules strictly:
-1. Output ONLY valid JSON. No markdown, no explanations.
-2. The JSON must conform exactly to this schema:
-{
-  "match_score": float (0.0 to 100.0),
-  "summary": "A 2-3 sentence high-level assessment",
-  "keyword_analysis": {
-    "matched_keywords": ["list", "of", "keywords"],
-    "missing_keywords": ["important", "missing", "keywords"]
-  },
-  "experience_match": [
-    {
-      "job_requirement": "Exact phrase from job description",
-      "resume_evidence": "Relevant excerpt or 'Not mentioned'",
-      "is_match": true/false
-    }
-  ],
-  "suggestions": [
-    "Specific, actionable advice to improve the resume"
-  ]
-}
-3. Be factual, concise, and helpful.
-4. Do not invent information not present in the resume or job description.
-"""
-
-def generate_analysis_report(
-    resume_text: str,
-    job_title: str,
-    job_description: str
-) -> AnalysisReport:
-    # Build a single prompt that includes the system guidance and user inputs.
-    user_prompt = f"""
-Job Title: {job_title}
-Job Description:
-{job_description}
-
-Resume Text:
-{resume_text}
+async def analyze_resume_against_job_url(file_id: str, job_url: str) -> AnalysisReport:
     """
-    full_prompt = f"{ANALYSIS_SYSTEM_PROMPT}\n\n{user_prompt}"
-
-    response = client.models.generate_content(
-        model="gemini-2.5-pro",
-        contents=full_prompt,
-        config={
-            "temperature": 0.3,
-            "max_output_tokens": 2000,
-            "response_mime_type": "application/json",
-        },
-    )
-
-    raw_json = response.text.strip()
+    End-to-end analysis pipeline:
+    1. Parse resume from storage
+    2. Scrape job posting from URL
+    3. Generate AI-powered analysis report
+    """
     try:
-        return AnalysisReport.model_validate_json(raw_json)
-    except ValueError as e:
-        raise RuntimeError(f"Failed to parse Gemini response into AnalysisReport: {e}")
+        # --- Step 1: Parse Resume ---
+        logger.info(f"Parsing resume for file_id: {file_id}")
+        resume_content = await parse_resume_from_storage(file_id)
+        if not resume_content.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Failed to extract meaningful content from resume PDF."
+            )
+
+        # --- Step 2: Scrape Job Posting ---
+        logger.info(f"Scraping job posting: {job_url}")
+        job_content = await scrape_job_posting(job_url)
+        if not job_content.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Failed to extract content from job posting URL."
+            )
+
+        # --- Step 3: Generate AI Analysis ---
+        logger.info("Generating AI analysis report...")
+        report = await generate_automated_analysis(
+            parsed_resume_content=resume_content,
+            scraped_job_content=job_content
+        )
+
+        logger.info(f"Analysis complete. Match score: {report.match_score}%")
+        return report
+
+    except HTTPException:
+        # Re-raise known HTTP errors
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in analysis pipeline: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred during resume analysis. Please try again later."
+        )

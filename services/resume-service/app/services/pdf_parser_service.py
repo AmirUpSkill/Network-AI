@@ -1,30 +1,33 @@
 import os
-from pathlib import Path
-from tempfile import NamedTemporaryFile
 from agentic_doc.parse import parse
 from app.core.config import settings
+from app.services.storage_service import download_resume
 
-def parse_resume_pdf(pdf_bytes: bytes) -> str:
+async def parse_resume_from_storage(file_id: str) -> str:
     """
-    Parse a resume PDF (as bytes) using Landing AI's Agentic Document Extraction.
-    Returns the extracted text content as a clean string (Markdown format).
+    Fetch resume from Supabase Storage and parse it with Landing AI.
+    Uses agentic_doc library which supports parsing PDF bytes directly.
     """
-    # --- Write bytes to a temporary file  ----
-    with NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        tmp_file.write(pdf_bytes)
-        tmp_file_path = tmp_file.name
-
+    # ---  Get PDF bytes from Supabase Storage ---- 
+    pdf_bytes = await download_resume(file_id)
+    
+    #----   Set the API key as environment variable --- 
+    original_key = os.environ.get('VISION_AGENT_API_KEY')
+    os.environ['VISION_AGENT_API_KEY'] = settings.LANDING_AI_API_KEY
+    
     try:
-        # ---  Parse the PDF ---
-        results = parse(
-            tmp_file_path,
-            api_key=settings.LANDING_AI_API_KEY
-        )
-        # ---  Return the markdown content  -----
+        # --- Parse PDF bytes directly ----
+        results = parse(pdf_bytes)
+        
         if results and len(results) > 0:
-            return results[0].markdown.strip()
+            # ---  Extract markdown content from first result ---
+            markdown_content = results[0].markdown
+            return markdown_content.strip() if markdown_content else ""
         else:
             return ""
+            
     finally:
-        if os.path.exists(tmp_file_path):
-            os.unlink(tmp_file_path)
+        if original_key is not None:
+            os.environ['VISION_AGENT_API_KEY'] = original_key
+        elif 'VISION_AGENT_API_KEY' in os.environ:
+            del os.environ['VISION_AGENT_API_KEY']

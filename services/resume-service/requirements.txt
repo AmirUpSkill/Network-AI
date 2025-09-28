@@ -14,7 +14,8 @@ landingai
 agentic-doc         
 firecrawl-py     
 # ---  Utilities ---
-python-dotenv      
+python-dotenv
+python-multipart      
 
 # --- Development & Testing Dependencies ---
 pytest              

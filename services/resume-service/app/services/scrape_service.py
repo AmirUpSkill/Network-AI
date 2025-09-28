@@ -13,10 +13,8 @@ async def scrape_job_posting(url: str) -> str:
     }
     payload = {
         "url": url,
-        "scrapeOptions": {
-            "onlyMainContent": True,
-            "formats": ["markdown"]
-        }
+        "onlyMainContent": True,
+        "formats": ["markdown"]
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -24,6 +22,6 @@ async def scrape_job_posting(url: str) -> str:
         response.raise_for_status()
         data = response.json()
 
-    # Firecrawl v2 returns: { "data": { "markdown": "..." } }
+    # --- FireCrawl V2 API --- 
     markdown_content = data.get("data", {}).get("markdown", "").strip()
     return markdown_content
