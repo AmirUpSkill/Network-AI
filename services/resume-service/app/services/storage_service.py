@@ -1,40 +1,50 @@
+
+from supabase import create_client, Client
+from app.core.config import settings
 import uuid
-from fastapi import UploadFile
-from app.core.database import storage_client
+import logging
 
-async def upload_resume(file: UploadFile) -> str:
-    """
-    Upload a resume PDF to Supabase Storage.
-    Returns a UUID-based file_id (no user_id for now).
-    """
-    file_id = str(uuid.uuid4())
-    file_path = f"{file_id}.pdf"
+logger = logging.getLogger(__name__)
 
-    contents = await file.read()
-    await file.seek(0)  
-
-    bucket = storage_client.from_("resumes")
-    response = bucket.upload(
-        path=file_path,
-        file=contents,
-        file_options={"content-type": "application/pdf"}
+def get_supabase_admin_client() -> Client:
+    """Returns a Supabase client authenticated with the service_role key (bypasses RLS)."""
+    return create_client(
+        supabase_url=settings.SUPABASE_URL,
+        supabase_key=settings.SUPABASE_KEY 
     )
 
-    if not response:
-        raise Exception("Upload failed")
+async def upload_resume(file) -> str:
+    supabase = get_supabase_admin_client()
+    file_id = str(uuid.uuid4())
+    file_path = f"{file_id}.pdf"  #
 
-    return file_id
+    contents = await file.read()
 
+    try:
+        response = supabase.storage.from_("resumes").upload(  
+            path=file_path,
+            file=contents,
+            file_options={"content-type": "application/pdf"}
+        )
+        logger.info(f"✅ Upload successful: {file_path}")
+        return file_id
+    except Exception as e:
+        logger.error(f"❌ Upload failed: {e}")
+        raise
 
 async def download_resume(file_id: str) -> bytes:
-    """
-    Download a resume PDF from Supabase Storage by file_id.
-    Returns raw PDF bytes.
-    """
-    file_path = f"{file_id}.pdf"
-    bucket = storage_client.from_("resumes")
+    """Downloads resume from Supabase Storage as bytes."""
+    supabase = get_supabase_admin_client()
+    file_path = f"{file_id}.pdf"  
+    
     try:
-        response = bucket.download(file_path)
-        return response
+        logger.info(f"🔍 Attempting download: {file_path}")
+        response = supabase.storage.from_("resumes").download(file_path)
+        if isinstance(response, bytes):
+            logger.info(f"✅ Download successful: {file_path}")
+            return response
+        else:
+            raise Exception("Download did not return bytes")
     except Exception as e:
-        raise FileNotFoundError(f"Resume with file_id {file_id} not found") from e
+        logger.error(f"❌ Failed to download resume {file_id}: {str(e)}")
+        raise e

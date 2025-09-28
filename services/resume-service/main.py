@@ -44,17 +44,6 @@ async def global_exception_handler(request, exc):
         content={"detail": "An internal server error occurred. Please try again later."},
     )
 
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f"Resume Service starting up...")
-    logger.info(f"Environment: {settings.SUPABASE_URL} (Supabase)")
-    logger.info(f"Service ready on port 8002")
-
-# Shutdown event
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Resume Service shutting down...")
 
 if __name__ == "__main__":
     import uvicorn
