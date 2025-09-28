@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     # ---  Supabase ---
     SUPABASE_URL: str = Field(..., description="Supabase project URL")
     SUPABASE_KEY: str = Field(..., description="Supabase service role key")
+    SUPABASE_JWT_SECRET: str = Field(..., description="Supabase JWT secret for token validation")
 
     #  ---  External APIs --- 
     LANDING_AI_API_KEY: str = Field(..., description="Landing AI API key for PDF parsing")
@@ -15,7 +16,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", 
         env_file_encoding="utf-8",
-        case_sensitive=True
+        case_sensitive=False
     )
 
 

@@ -21,3 +21,4 @@ python-multipart
 pytest              
 httpx
 pytest-asyncio              
+python-jose[cryptography] 
