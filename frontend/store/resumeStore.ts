@@ -1,4 +1,3 @@
-// frontend/store/resumeStore.ts
 import { create } from 'zustand';
 import { uploadResume, analyzeResume } from '@/services/resumeService';
 import { AnalysisReport, AnalysisRequest } from '@/types/resume';

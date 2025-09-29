@@ -1,4 +1,3 @@
-// frontend/app/dashboard/resume/page.tsx
 'use client';
 import { useResume } from "@/hooks/useResume";
 import { UploadDropzone } from "@/components/resume/UploadDropzone";
@@ -7,8 +6,6 @@ import { useEffect } from "react";
 
 export default function ResumePage() {
     const { flowState, reset } = useResume();
-
-    // Reset the store when the component unmounts to ensure a clean state next time
     useEffect(() => {
         return () => {
             reset();

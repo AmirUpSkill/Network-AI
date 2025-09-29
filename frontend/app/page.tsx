@@ -50,88 +50,48 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Demo Section */}
       <section className="py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Everything you need to land your dream job
+              See Network AI in Action
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful AI tools designed specifically for fresh graduates and job seekers
+              Watch how our AI-powered tools help you find the perfect connections and opportunities
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* LinkedIn Search Feature */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg dark:bg-blue-900/20">
-                    <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          {/* Demo Thumbnail */}
+          <div className="max-w-4xl mx-auto">
+            <div className="relative group cursor-pointer">
+              <div className="aspect-video bg-black rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center overflow-hidden">
+                {/* Placeholder content */}
+                <div className="text-center space-y-4">
+                  <div className="w-20 h-20 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <svg className="h-10 w-10 text-white ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                    </svg>
                   </div>
-                  <div>
-                    <CardTitle className="text-xl">Smart LinkedIn Search</CardTitle>
-                    <CardDescription>AI-powered semantic search</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Search LinkedIn profiles, companies, and job opportunities using natural language. 
-                  Our AI enhances your queries to find the most relevant results.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Semantic profile matching
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Company and job discovery
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Advanced filtering options
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Resume Analysis Feature */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg dark:bg-green-900/20">
-                    <FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">Resume Analysis</CardTitle>
-                    <CardDescription>Match your resume to any job</CardDescription>
+                  <div className="text-white">
+                    <h3 className="text-lg font-semibold mb-2">Interactive Demo</h3>
+                    <p className="text-gray-300 text-sm">Coming Soon</p>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Upload your resume and get detailed analysis against job postings. 
-                  Receive actionable feedback to improve your application success rate.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Compatibility scoring
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Keyword optimization
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Improvement suggestions
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+              </div>
+              
+              {/* Play button overlay */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                  <svg className="h-8 w-8 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -203,7 +163,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-12 px-4 border-t">
         <div className="max-w-4xl mx-auto text-center space-y-4">
           <div className="flex items-center justify-center gap-2">
