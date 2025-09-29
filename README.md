@@ -1,4 +1,4 @@
-# Network AI 🧠
+# Network AI 👾
 
 > **AI-powered LinkedIn networking platform designed for fresh graduates and job seekers**
 
@@ -23,7 +23,7 @@ Network AI is a microservice-based application that combines intelligent LinkedI
 - **Actionable Insights**: Receive keyword analysis and improvement suggestions
 - **Web Scraping**: Auto-extract job requirements from posting URLs
 
-### 🚀 Modern Tech Stack
+### 🔥 Modern Tech Stack
 - **Frontend**: Next.js 15 with TypeScript, Tailwind CSS, and ShadCN/UI
 - **Backend**: FastAPI microservices with Python
 - **AI Integration**: Exa AI, Google Gemini, FireCrawl, and Landing AI
@@ -92,7 +92,7 @@ networkai/
 
 ---
 
-## 🚀 Getting Started
+## ☄️ Getting Started
 
 Follow these steps to set up and run the project locally.
 
@@ -202,7 +202,7 @@ graph TB
     
     SearchService --> MongoDB[(🍃 MongoDB)]
     SearchService --> ExaAPI[🔗 Exa AI API]
-    SearchService --> GeminiAPI[🤖 Gemini API]
+    SearchService --> GeminiAPI[🔮 Gemini API]
     
     ResumeService --> Supabase[(💾 Supabase)]
     ResumeService --> LandingAI[📋 Landing AI]
