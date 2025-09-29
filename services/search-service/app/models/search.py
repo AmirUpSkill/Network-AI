@@ -93,7 +93,7 @@ class ExaSearchResponse(BaseModel):
         Factory method to create ExaSearchResponse from Exa API response object.
         Handles both Result objects and dictionary formats.
         """
-        # Lazy import to break circular dependency
+        # ---  Lazy import to break circular dependency --- 
         from app.models.parsers import PersonResultParser
         
         # ---  Parse results using the dedicated parser ----

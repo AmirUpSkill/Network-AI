@@ -6,14 +6,14 @@ from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.routers import health, resume
 
-# Configure logging
+# --- Configure logging ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
-# Create FastAPI app instance
+#  --- FastAPI app instance ---
 app = FastAPI(
     title="Resume Service API",
     description="A service for uploading resumes and generating AI-powered analysis reports against job postings.",
@@ -22,20 +22,20 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Add CORS middleware (allow all origins for development; restrict in production)
+# ---- CORS middleware ----
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Restrict to specific origins in production
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount routers
+# ---  Mount routers ---
 app.include_router(health.router, tags=["Health"])
 app.include_router(resume.router, tags=["Resume"])
 
-# Global exception handler for unhandled errors
+# ---  Global exception handler for unhandled errors ----
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
@@ -51,6 +51,6 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         port=8002,
-        reload=True,  # Enable auto-reload for development
+        reload=True, 
         log_level="info",
     )
