@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// --- Reusable Sub-Schemas ---
 export const workExperienceItemSchema = z.object({
   title: z.string().nullable(),
   company: z.string().nullable(),
@@ -14,7 +13,6 @@ export const educationItemSchema = z.object({
   field_of_study: z.string().nullable(),
 });
 
-// --- Main Result Schema ---
 export const personResultSchema = z.object({
   id: z.string(),
   url: z.string().url(),
@@ -28,7 +26,6 @@ export const personResultSchema = z.object({
   skills: z.array(z.string()),
 });
 
-// --- API Request & Response Schemas ---
 export const searchRequestSchema = z.object({
   query: z.string().min(3, "Query must be at least 3 characters long.").max(500),
   category: z.enum(["linkedin profile", "company", "job offers", "pages"]),
@@ -46,8 +43,6 @@ export const searchResponseSchema = z.object({
   metadata: searchMetadataSchema,
 });
 
-
-// --- Inferred TypeScript Types ---
 export type WorkExperienceItem = z.infer<typeof workExperienceItemSchema>;
 export type EducationItem = z.infer<typeof educationItemSchema>;
 export type PersonResult = z.infer<typeof personResultSchema>;

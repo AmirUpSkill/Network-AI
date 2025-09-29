@@ -5,11 +5,6 @@ import {
   searchResponseSchema,
 } from '@/types/search';
 
-/**
- * Performs a LinkedIn search by calling the backend API.
- * @param request The search parameters (query, category, limit).
- * @returns A promise that resolves to the validated search response.
- */
 export const searchLinkedIn = async (
   request: SearchRequest
 ): Promise<SearchResponse> => {

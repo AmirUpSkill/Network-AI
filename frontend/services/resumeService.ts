@@ -1,12 +1,7 @@
-// frontend/services/resumeService.ts
 import { createClient } from '@/lib/supabase';
 import { AnalysisRequest, analysisReportSchema, UploadResponse, uploadResponseSchema } from '@/types/resume';
 import { apiCall } from '@/lib/api-client';
 
-/**
- * Uploads a resume PDF file to the backend.
- * This function handles multipart/form-data.
- */
 export const uploadResume = async (file: File): Promise<UploadResponse> => {
   const formData = new FormData();
   formData.append('file', file);
@@ -34,9 +29,6 @@ export const uploadResume = async (file: File): Promise<UploadResponse> => {
   return uploadResponseSchema.parse(responseData);
 };
 
-/**
- * Starts the resume analysis against a job URL.
- */
 export const analyzeResume = async (request: AnalysisRequest) => {
   const responseData = await apiCall(`/resume/analyze-auto`, {
     method: 'POST',
